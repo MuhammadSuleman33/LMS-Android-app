@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution items/">
+    <File Path="Director.build.props" />
+    <File Path="Director.build.targets" />
+  </Folder>
+  <Project Path="lms.android.csproj">
+    <Deploy />
+  </Project>
+</Solution>

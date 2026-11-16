@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:lms.android"
+             x:Class="lms.android.App">
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- ===== Brand palette ===== -->
+            <Color x:Key="Primary">#219EBC</Color>
+            <!-- buttons, links, active items -->
+            <Color x:Key="PrimaryDark">#023047</Color>
+            <!-- navbar, headers, text -->
+            <Color x:Key="PrimaryLight">#8ECAE6</Color>
+            <!-- highlights, dark-mode accents -->
+            <Color x:Key="Secondary">#FFB703</Color>
+            <!-- progress, badges -->
+            <Color x:Key="Tertiary">#FB8500</Color>
+            <!-- CTAs, deadlines -->
+            <Color x:Key="Accent">#FB8500</Color>
+
+            <!-- ===== Backgrounds ===== -->
+            <Color x:Key="LightBackground">#F7FBFD</Color>
+            <Color x:Key="DarkBackground">#011A29</Color>
+
+            <!-- ===== Text colors ===== -->
+            <Color x:Key="Label Text">#023047</Color>
+            <Color x:Key="Label Text Dark">White</Color>
+
+            <!-- ===== Card colors ===== -->
+            <Color x:Key="Card Background">White</Color>
+            <Color x:Key="Card Background Dark">#0B2A3D</Color>
+            <Color x:Key="Card Border">#D6E6EE</Color>
+
+            <!-- ===== Misc ===== -->
+            <Color x:Key="Gray400">#919191</Color>
+
+            <!-- ===== Font sizes ===== -->
+            <x:Double x:Key="FontSizeMicro">10</x:Double>
+            <x:Double x:Key="FontSizeSmall">12</x:Double>
+            <x:Double x:Key="FontSizeMedium">16</x:Double>
+            <x:Double x:Key="FontSizeLarge">20</x:Double>
+
+            <!-- ===== Page and navigation ===== -->
+            <Style TargetType="Page" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
+            </Style>
+
+            <Style TargetType="NavigationPage" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
+                <Setter Property="BarBackgroundColor" Value="{StaticResource PrimaryDark}" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style>
+
+            <!-- ===== Labels (Open Sans, sans-serif) ===== -->
+            <Style x:Key="BaseLabel" TargetType="Label">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource Label Text}, Dark={StaticResource Label Text Dark}}" />
+            </Style>
+
+            <Style x:Key="MicroLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeMicro}" />
+            </Style>
+
+            <Style x:Key="SmallLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
+            </Style>
+
+            <Style x:Key="MediumLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}" />
+            </Style>
+
+            <Style x:Key="LargeLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}" />
+            </Style>
+
+            <!-- ===== Refresh ===== -->
+            <Style TargetType="RefreshView" ApplyToDerivedTypes="True">
+                <Setter Property="RefreshColor" Value="{StaticResource Primary}" />
+            </Style>
+
+            <!-- ===== Buttons ===== -->
+            <!-- Base button style (named, so other styles can build on it) -->
+            <Style x:Key="BaseButton" TargetType="Button">
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="48" />
+            </Style>
+
+            <!-- Default for every Button: blue, white text -->
+            <Style TargetType="Button" BasedOn="{StaticResource BaseButton}" />
+
+            <!-- Orange call-to-action (dark text for contrast) -->
+            <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="BackgroundColor" Value="{StaticResource Tertiary}" />
+                <Setter Property="TextColor" Value="{StaticResource PrimaryDark}" />
+            </Style>
+
+            <!-- Outline button -->
+            <Style x:Key="ButtonOutline" TargetType="Button">
+                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                <Setter Property="Background"
+                        Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
+                <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderWidth" Value="2" />
+                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="CornerRadius" Value="20" />
+            </Style>
+
+            <!-- ===== Entry (login fields) ===== -->
+            <Style TargetType="Entry">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+                <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource Label Text}, Dark={StaticResource Label Text Dark}}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource Gray400}" />
+            </Style>
+
+            <!-- ===== Card ===== -->
+            <Style x:Key="CardView" TargetType="Border">
+                <Setter Property="Stroke"
+                        Value="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Background"
+                        Value="{AppThemeBinding Light={StaticResource Card Background}, Dark={StaticResource Card Background Dark}}" />
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

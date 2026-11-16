@@ -1,0 +1,13 @@
+﻿namespace lms.android.Model;
+
+
+public class UserSession
+{
+    public Guid UserId { get; set; } = Guid.NewGuid();
+    public required string Fullname { get; set; }
+    public required string Username { get; set; }
+    public required string Email { get; set; }
+    public required string Phone { get; set; }
+    public string RoleName { get; set; } 
+    public required string Password { get; set; }
+}

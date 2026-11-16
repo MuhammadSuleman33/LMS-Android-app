@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:lms.android.ViewModel"
+             x:Class="lms.android.View.SignUpPage"
+             x:DataType="vm:SignUpViewModel"
+             Shell.NavBarIsVisible="False"
+             Title="Sign Up">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Top header: navy band, white title -->
+        <VerticalStackLayout Grid.Row="0"
+                             BackgroundColor="{StaticResource PrimaryDark}"
+                             Padding="7,10,7,7">
+            <Label Text="GET STARTED"
+                   Margin="0,10,0,10"
+                   TextColor="White"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="40"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Registration form -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="13" Margin="0,20,0,0">
+
+                <Label Text="Create New Account"
+                       Style="{StaticResource LargeLabel}"
+                       FontSize="38"
+                       HorizontalOptions="Center" />
+
+                <Label Text="Join and start learning today"
+                       Style="{StaticResource MediumLabel}"
+                       HorizontalOptions="Center"
+                       FontSize="25"
+                       Opacity="0.8"
+                       Margin="0,0,0,8" />
+
+                <Entry Placeholder="Full Name"
+                       FontSize="28"
+                       Text="{Binding FullName}" />
+
+                <Entry Placeholder="Username"
+                       FontSize="28"
+                       Text="{Binding Username}" />
+
+                <Entry Placeholder="Email Address"
+                       Keyboard="Email"
+                       FontSize="28"
+                       Text="{Binding Email}" />
+
+                <Entry Placeholder="Phone Number"
+                       Keyboard="Telephone"
+                       FontSize="28"
+                       Text="{Binding Phone}" />
+
+                <Entry Placeholder="Password"
+                       IsPassword="True"
+                       FontSize="28"
+                       Text="{Binding Password}" />
+
+                <Entry Placeholder="Confirm Password"
+                       IsPassword="True"
+                       FontSize="28"
+                       Text="{Binding ConfirmPassword}" />
+
+                <!-- Main action: orange with navy text -->
+                <Button Text="Register Account"
+                        Style="{StaticResource AccentButton}"
+                        FontSize="28"
+                        Command="{Binding SignUpCommand}"
+                        IsEnabled="{Binding IsNotBusy}"
+                        Margin="0,10,0,0"
+                        HeightRequest="60"/>
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}" />
+
+                <!-- Link-style button -->
+                <Button Text="Already have an account? Log In"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource PrimaryLight}}"
+                        FontSize="20"
+                        Command="{Binding GoToLoginCommand}" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

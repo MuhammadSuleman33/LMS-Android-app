@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:lms.android.ViewModel"
+             x:Class="lms.android.View.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             Title="Login">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Top header: navy band, white title -->
+        <VerticalStackLayout Grid.Row="0"
+                             BackgroundColor="{StaticResource PrimaryDark}"
+                             Padding="7,0,7,7">
+            <Label Text="LMS PORTAL"
+                   Margin="0,20,0,20"
+                   TextColor="White"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="30"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Main form -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24" Spacing="24" Margin="0,40,0,0">
+
+                <Label Text="Welcome Back"
+                       Style="{StaticResource LargeLabel}"
+                       FontSize="40"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"/>
+
+                <Label Text="Sign in to continue learning"
+                       Style="{StaticResource MediumLabel}"
+                       FontSize="24"
+                       HorizontalOptions="Center"
+                       Opacity="0.8" />
+
+                <Entry Placeholder="Username or Email"
+                       Text="{Binding UsernameOrEmail}"
+                       FontSize="35" />
+
+                <Entry Placeholder="Password"
+                       IsPassword="True"
+                       Text="{Binding Password}"
+                       FontSize="35" />
+
+
+                <Picker Title="Select Role"
+                        ItemsSource="{Binding AvailableRoles}"
+                        SelectedItem="{Binding SelectedRole}"
+                        FontSize="35" />
+
+                <!-- Link-style button -->
+                <Button Text="Forgot Password?"                        
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource PrimaryLight}}"
+                        HorizontalOptions="End"
+                        FontSize="24"
+                        HeightRequest="60"
+                        Command="{Binding GoToForgotPasswordCommand}" />
+
+                <!-- Main action: orange with navy text -->
+                <Button Text="Login"
+                    
+                        Style="{StaticResource AccentButton}"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsNotBusy}"
+                        FontSize="28" 
+                        HeightRequest="60"
+                        />
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}" />
+
+                <!-- Link-style button -->
+                <Button Text="Don't have an account? Sign Up"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource PrimaryLight}}"
+                        Command="{Binding GoToSignUpCommand}"
+                        FontSize="20" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

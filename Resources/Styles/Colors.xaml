@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Brand palette -->
+    <Color x:Key="Primary">#219EBC</Color>
+    <!-- buttons, links, active items -->
+    <Color x:Key="PrimaryDark">#023047</Color>
+    <!-- navbar, headers, text -->
+    <Color x:Key="PrimaryLight">#8ECAE6</Color>
+    <!-- highlights, dark-mode accents -->
+    <Color x:Key="Secondary">#FFB703</Color>
+    <!-- progress, badges -->
+    <Color x:Key="Tertiary">#FB8500</Color>
+    <!-- CTAs, deadlines -->
+
+    <Color x:Key="LightBackground">#F7FBFD</Color>
+    <Color x:Key="DarkBackground">#011A29</Color>
+
+    <Color x:Key="White">White</Color>
+    <Color x:Key="Black">Black</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}" />
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}" />
+
+</ResourceDictionary>

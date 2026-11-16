@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="lms.android.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:view="clr-namespace:lms.android.View"
+    Shell.FlyoutBehavior="Disabled"
+    Title="LMS">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+
+            <!-- Applies to every page inside the Shell -->
+            <Style TargetType="Shell" ApplyToDerivedTypes="True">
+                <!-- Top navigation bar -->
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.NavBarHasShadow" Value="False" />
+
+                <!-- Bottom tab bar -->
+                <Setter Property="Shell.TabBarBackgroundColor"
+                        Value="{AppThemeBinding Light=White, Dark={StaticResource DarkBackground}}" />
+                <Setter Property="Shell.TabBarForegroundColor"
+                        Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+                <Setter Property="Shell.TabBarTitleColor"
+                        Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+                <Setter Property="Shell.TabBarUnselectedColor"
+                        Value="{AppThemeBinding Light=#95023047, Dark=#95FFFFFF}" />
+            </Style>
+
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <!-- 1. Standalone Login Screen (No Bottom TabBar) -->
+    <ShellContent
+        x:Name="LoginShellContent"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False"
+        Title="Login"
+        ContentTemplate="{DataTemplate view:LoginPage}"
+        Route="LoginPage" />
+
+    
+    <!-- 2. Main App Bottom TabBar (Courses + Profile) -->
+    <TabBar x:Name="MainTabBar">
+        <ShellContent
+            x:Name="CoursesShellContent"
+            Shell.NavBarIsVisible="True"
+            Title="Dashboard"
+            ContentTemplate="{DataTemplate view:MainPage}"
+            Route="MainPage">
+            <ShellContent.Icon>
+                <FontImageSource Glyph="📚" Size="38" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <ShellContent
+            x:Name="ProfileShellContent"
+            Shell.NavBarIsVisible="True"
+            Title="Profile"
+            ContentTemplate="{DataTemplate view:ProfilePage}"
+            Route="ProfilePage">
+            <ShellContent.Icon>
+                <FontImageSource Glyph="👤" Size="38" />
+            </ShellContent.Icon>
+        </ShellContent>
+    </TabBar>
+
+</Shell>

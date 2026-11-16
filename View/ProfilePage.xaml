@@ -1,0 +1,823 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="lms.android.View.ProfilePage"
+             xmlns:viewmodel="clr-namespace:lms.android.ViewModel"
+             xmlns:model="clr-namespace:lms.android.Model"
+             x:DataType="viewmodel:ProfileViewModel"
+             Title="{Binding PageTitle}">
+
+    <!-- Top-right navigation bar Logout button -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Logout"
+                     Order="Primary"
+                     Priority="0"
+                     Command="{Binding LogoutCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*, Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout>
+
+                <!-- Header band with dynamic role icon -->
+                <Grid>
+                    <BoxView HeightRequest="100"
+                             VerticalOptions="Start"
+                             Color="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
+
+                    <Border WidthRequest="160"
+                            HeightRequest="160"
+                            Margin="0,30,0,0"
+                            Padding="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start"
+                            Stroke="{AppThemeBinding Light=White, Dark={StaticResource DarkBackground}}"
+                            StrokeThickness="4"
+                            StrokeShape="Ellipse"
+                            BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Card Background Dark}}">
+                        <Label Text="{Binding RoleIcon}"
+                               FontSize="58"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <!-- ===== NOT VERIFIED (Pending / Rejected) ===== -->
+                <VerticalStackLayout Padding="15" Spacing="15" IsVisible="{Binding IsNotVerified}">
+
+                    <Label Text="{Binding DisplayName}"
+                           FontAttributes="Bold"
+                           Style="{StaticResource LargeLabel}"
+                           HorizontalOptions="Center"
+                           FontSize="35" />
+
+                    <Border Style="{StaticResource CardView}" Padding="20">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="{Binding StatusTitle}"
+                                   FontSize="30"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="#E67E22" />
+
+                            <Label Text="{Binding StatusMessage}"
+                                   Style="{StaticResource MediumLabel}"
+                                   HorizontalTextAlignment="Center"
+                                   HorizontalOptions="Center" />
+
+                            <Label Text="{Binding RequestedRole, StringFormat='Requested role: {0}'}"
+                                   Style="{StaticResource SmallLabel}"
+                                   FontSize="20"
+                                   Opacity="0.7"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Button Text="Check Status"
+                            Command="{Binding RefreshVerificationCommand}"
+                            FontSize="27"
+                            HeightRequest="60"
+                            FontAttributes="Bold" />
+                </VerticalStackLayout>
+
+                <!-- ===== VERIFIED: STUDENT ROLE CONTENT ===== -->
+                <VerticalStackLayout Padding="15" Spacing="15" IsVisible="{Binding IsStudent}">
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="{Binding Profile.FullName}" FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               HorizontalOptions="Center" FontSize="35"/>
+                        <Label Text="{Binding Profile.RegistrationNo, StringFormat='Reg No: {0}'}" FontSize="28" FontAttributes="Bold"
+                               Style="{StaticResource MediumLabel}"
+                               HorizontalOptions="Center"
+                               Opacity="0.7" />
+                    </VerticalStackLayout>
+
+                    <!-- Section: Academic Status -->
+                    <Label Text="Academic Status"
+                           FontAttributes="Bold"
+                           Style="{StaticResource LargeLabel}"
+                           FontSize="35"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                    <Border Style="{StaticResource CardView}" Padding="15">
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="12">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                <Label Text="Current Semester" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                <Label Text="{Binding Profile.CurrentSemester}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                                <Label Text="Academic Status" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                <Label Text="{Binding Profile.AcademicStatus}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#2ECC71" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                                <Label Text="Admission Year" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                <Label Text="{Binding Profile.EnrollmentYear}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                                <Label Text="Expected Graduation" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                <Label Text="{Binding Profile.ExpectedGraduationDate, StringFormat='{0:MMM yyyy}'}" Style="{StaticResource MediumLabel}" FontAttributes="Bold" FontFamily="OpenSansSemibold" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <BoxView HeightRequest="1" Margin="0,5"
+                             Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                    <!-- Section: Personal Details -->
+                    <Label Text="Personal Details" FontAttributes="Bold"
+                           Style="{StaticResource LargeLabel}"
+                           FontSize="35"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                    <Label Text="First Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                    <Entry Text="{Binding Profile.FirstName}" Placeholder="First Name" FontSize="27" />
+
+                    <Label Text="Last Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                    <Entry Text="{Binding Profile.LastName}" Placeholder="Last Name" FontSize="27" />
+
+                    <Label Text="Gender" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.Gender}" Placeholder="Gender" FontSize="27" />
+
+                    <Button Text="Save Personal Info" Command="{Binding UpdateCoreCommand}" FontSize="27" HeightRequest="60" FontAttributes="Bold"/>
+
+                    <BoxView HeightRequest="1" Margin="0,5"
+                             Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                    <!-- Section: Contact Details -->
+                    <Label Text="Contact Details"
+                           Style="{StaticResource LargeLabel}"
+                           FontSize="35"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                    <Label Text="Email Address" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.Email}" Keyboard="Email" Placeholder="Email" FontSize="27"/>
+
+                    <Label Text="Phone Number" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.Phone}" Keyboard="Telephone" Placeholder="Phone" FontSize="27" />
+
+                    <Label Text="Residential Address" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.Address}" Placeholder="Address" FontSize="27"/>
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="City" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                            <Entry Text="{Binding Profile.City}" Placeholder="City" FontSize="27" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label Text="Postal Code" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold"/>
+                            <Entry Text="{Binding Profile.PostalCode}" Keyboard="Numeric" Placeholder="Zip" FontSize="24" FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Label Text="Emergency Contact Person" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                    <Entry Text="{Binding Profile.EmergencyContactName}" Placeholder="Name" FontSize="27" />
+
+                    <Label Text="Emergency Contact Number" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                    <Entry Text="{Binding Profile.EmergencyContactPhone}" Keyboard="Telephone" Placeholder="Phone" FontSize="27"/>
+
+                    <Button Text="Save Contact Details" Command="{Binding UpdateContactCommand}" FontSize="30" HeightRequest="60" FontAttributes="Bold"/>
+
+                    <BoxView HeightRequest="1" Margin="0,5"
+                             Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                    <!-- Section: Guardian Information -->
+                    <Label Text="Guardian Information"
+                           Style="{StaticResource LargeLabel}"
+                           FontSize="35"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                    <Label Text="Guardian Full Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.GuardianName}" Placeholder="Guardian Name" FontSize="27"/>
+
+                    <Label Text="Relationship" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.Relationship}" Placeholder="e.g. Father, Mother" FontSize="27"/>
+
+                    <Label Text="Guardian Phone" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.GuardianPhone}" Keyboard="Telephone" Placeholder="Phone" FontSize="27"/>
+
+                    <Label Text="Guardian Email" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Profile.GuardianEmail}" Keyboard="Email" Placeholder="Email" FontSize="27"/>
+
+                    <Button Text="Save Guardian Info"
+                            FontAttributes="Bold"
+                            Command="{Binding UpdateGuardianCommand}"
+                            Margin="0,8,0,10" FontSize="30" HeightRequest="60"/>
+                </VerticalStackLayout>
+
+                <!-- ===== VERIFIED: STAFF & ADMIN ROLES (Teacher, HOD, Competent Authority, Super Admin) ===== -->
+                <VerticalStackLayout Padding="15" Spacing="15" IsVisible="{Binding IsStaffOrAdmin}">
+
+                    <Label Text="{Binding AccountProfile.FullName}"
+                           FontAttributes="Bold"
+                           Style="{StaticResource LargeLabel}"
+                           HorizontalOptions="Center"
+                           FontSize="35" />
+
+                    <Label Text="{Binding CurrentRole, StringFormat='Active Role: {0}'}"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#2ECC71"
+                           HorizontalOptions="Center" />
+
+                    <!-- Core Account Info Card -->
+                    <Border Style="{StaticResource CardView}" Padding="18">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Role &amp; Account Details"
+                                   FontSize="26"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                            <Label Text="{Binding AccountProfile.RoleDescription}"
+                                   Style="{StaticResource MediumLabel}"
+                                   Opacity="0.85" />
+
+                            <BoxView HeightRequest="1" Margin="0,5"
+                                     Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                            <Label Text="{Binding AccountProfile.Username, StringFormat='Username: {0}'}" Style="{StaticResource MediumLabel}" FontSize="20" />
+                            <Label Text="{Binding AccountProfile.Email, StringFormat='Email: {0}'}" Style="{StaticResource MediumLabel}" FontSize="20" />
+                            <Label Text="{Binding AccountProfile.Phone, StringFormat='Phone: {0}'}" Style="{StaticResource MediumLabel}" FontSize="20" />
+                            <Label Text="{Binding AccountProfile.VerificationStatus, StringFormat='Verification: {0}'}" FontSize="20" FontAttributes="Bold" TextColor="#2ECC71" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- ===== VERIFIED: TEACHER FULL PROFILE ===== -->
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsTeacher}">
+
+                        <!-- Section: Faculty Overview Card -->
+                        <Label Text="Faculty Status"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Border Style="{StaticResource CardView}" Padding="15">
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="12">
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="Employee No" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding TeacherProfile.EmployeeNo}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                                    <Label Text="Employment Status" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding TeacherProfile.Status}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#2ECC71" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                                    <Label Text="Active Courses" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding TeacherProfile.AssignedCoursesCount}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                                    <Label Text="Designation" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding TeacherProfile.Designation}" Style="{StaticResource MediumLabel}" FontAttributes="Bold" FontFamily="OpenSansSemibold" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 1: Personal & Contact Details (dbo.Teachers) -->
+                        <Label Text="Personal &amp; Contact Details"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Employee No / Code" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.EmployeeNo}" Placeholder="e.g. EMP-0005" FontSize="27" />
+
+                        <Label Text="First Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.FirstName}" Placeholder="First Name" FontSize="27" />
+
+                        <Label Text="Last Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.LastName}" Placeholder="Last Name" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Gender" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding TeacherProfile.Gender}" Placeholder="Gender" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Date of Birth" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding TeacherProfile.DateOfBirth}" FontSize="24" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Official Email" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.Email}" Keyboard="Email" Placeholder="Official Email" FontSize="27" />
+
+                        <Label Text="Phone Number" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.Phone}" Keyboard="Telephone" Placeholder="Phone Number" FontSize="27" />
+
+                        <Button Text="Save Personal Info"
+                                Command="{Binding UpdateTeacherPersonalCommand}"
+                                FontSize="27"
+                                HeightRequest="60"
+                                FontAttributes="Bold" />
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 2: Academic, Rank & Office Details (dbo.Teacher & dbo.TeacherAcademic) -->
+                        <Label Text="Academic &amp; Rank Details"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Designation / Rank" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.Designation}" Placeholder="Lecturer / Assistant Professor" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Department ID" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding TeacherProfile.DepartmentID}" Keyboard="Numeric" Placeholder="1" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Experience (Years)" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding TeacherProfile.ExperienceYears}" Keyboard="Numeric" Placeholder="Years" FontSize="27" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Highest Qualification" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.Qualification}" Placeholder="e.g. MS/MPhil, Ph.D." FontSize="27" />
+
+                        <Label Text="Specialization" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.Specialization}" Placeholder="e.g. Artificial Intelligence" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Office Location" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding TeacherProfile.OfficeLocation}" Placeholder="Room CS-204" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Joining Date" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding TeacherProfile.JoiningDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Button Text="Save Academic &amp; Office Info"
+                                Command="{Binding UpdateTeacherAcademicCommand}"
+                                FontSize="27"
+                                HeightRequest="60"
+                                FontAttributes="Bold" />
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 3: Work Experience (dbo.TeacherExperience) -->
+                        <Label Text="Previous Experience"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Organization / University" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.OrganizationName}" Placeholder="Organization Name" FontSize="27" />
+
+                        <Label Text="Job Title" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding TeacherProfile.PreviousJobTitle}" Placeholder="Job Title" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Start Date" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding TeacherProfile.ExpStartDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="End Date" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding TeacherProfile.ExpEndDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Button Text="Save Experience Info"
+                                Command="{Binding UpdateTeacherExperienceCommand}"
+                                FontSize="27"
+                                HeightRequest="60"
+                                FontAttributes="Bold" />
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 4: Assigned Courses Summary (dbo.TeacherCourseAssignments) -->
+                        <Label Text="Assigned Courses"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Border Style="{StaticResource CardView}" Padding="18">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Current Course Load"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+                                <Label Text="{Binding TeacherProfile.AssignedCoursesSummary}"
+                                       Style="{StaticResource MediumLabel}"
+                                       FontSize="20"
+                                       Opacity="0.85" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </VerticalStackLayout>
+
+                    <!-- ===== VERIFIED: HOD FULL PROFILE (Mapped to dbo.HeadOfDepartment) ===== -->
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsHOD}">
+
+                        <!-- Section: Department Leadership Overview -->
+                        <Label Text="Department Leadership"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Border Style="{StaticResource CardView}" Padding="15">
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="12">
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="HOD ID" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding HODProfile.HODID}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                                    <Label Text="Tenure Status" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding HODProfile.TenureStatus}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#2ECC71" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                                    <Label Text="Dept. Faculty" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding HODProfile.DepartmentTeachersCount}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                                    <Label Text="Office Room No" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding HODProfile.OfficeRoomNo}" Style="{StaticResource MediumLabel}" FontAttributes="Bold" FontFamily="OpenSansSemibold" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section: HOD Appointment & Administrative Details -->
+                        <Label Text="HOD Appointment Details"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Full Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding HODProfile.FullName}" Placeholder="HOD Full Name" FontSize="27" />
+
+                        <Label Text="Official Email" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding HODProfile.Email}" Keyboard="Email" Placeholder="Official Email" FontSize="27" />
+
+                        <Label Text="Phone Number" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding HODProfile.Phone}" Keyboard="Telephone" Placeholder="Phone Number" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Department ID" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding HODProfile.DepartmentID}" Keyboard="Numeric" Placeholder="1" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Office Room No" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding HODProfile.OfficeRoomNo}" Placeholder="e.g. HOD-101" FontSize="27" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Appointed Date" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding HODProfile.AppointedDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Tenure Expiry Date" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding HODProfile.TenureExpiryDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Departmental Notes / Mandate" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Editor Text="{Binding HODProfile.Notes}"
+                                Placeholder="Enter departmental notes, committee roles, or office hours..."
+                                AutoSize="TextChanges"
+                                MinimumHeightRequest="100"
+                                FontSize="24" />
+
+                        <Button Text="Save HOD Profile"
+                                Command="{Binding UpdateHODProfileCommand}"
+                                FontSize="27"
+                                HeightRequest="60"
+                                FontAttributes="Bold" />
+
+                    </VerticalStackLayout>
+
+                    <!-- ===== VERIFIED: COMPETENT AUTHORITY FULL PROFILE (Mapped to dbo.CompetentAuthority) ===== -->
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsCompetentAuthority}">
+
+                        <!-- Section: Executive Governance Overview -->
+                        <Label Text="Executive Governance"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Border Style="{StaticResource CardView}" Padding="15">
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="12">
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="Authority Code" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding CompetentAuthorityProfile.AuthorityCode}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                                    <Label Text="Executive Status" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding CompetentAuthorityProfile.Status}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#2ECC71" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                                    <Label Text="Departments" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding CompetentAuthorityProfile.TotalDepartmentsCount}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                                    <Label Text="Active HODs" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding CompetentAuthorityProfile.TotalHODsCount}" Style="{StaticResource MediumLabel}" FontAttributes="Bold" FontFamily="OpenSansSemibold" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 1: Executive Identity & Jurisdiction -->
+                        <Label Text="Authority &amp; Jurisdiction"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Authority Code" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.AuthorityCode}" Placeholder="e.g. CA-0001" FontSize="27" />
+
+                        <Label Text="Full Legal Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.FullName}" Placeholder="Full Name" FontSize="27" />
+
+                        <Label Text="Executive Designation" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.Designation}" Placeholder="e.g. Dean / Registrar / Pro-Rector" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Jurisdiction Scope" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding CompetentAuthorityProfile.JurisdictionScope}" Placeholder="University-Wide" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Signing Tier" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding CompetentAuthorityProfile.SigningAuthorityLevel}" Placeholder="Tier-1 Executive" FontSize="27" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Highest Qualification" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.Qualification}" Placeholder="e.g. Ph.D. / Post-Doc" FontSize="27" />
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 2: Secretariat, Contact & Tenure -->
+                        <Label Text="Secretariat &amp; Tenure"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Official Email" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.Email}" Keyboard="Email" Placeholder="Official Email" FontSize="27" />
+
+                        <Label Text="Official Phone" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.Phone}" Keyboard="Telephone" Placeholder="Phone Number" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Secretariat Office" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding CompetentAuthorityProfile.SecretariatOfficeLocation}" Placeholder="Executive Block 101" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Protocol Ext." Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding CompetentAuthorityProfile.ProtocolExtension}" Keyboard="Numeric" Placeholder="e.g. 101" FontSize="27" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Appointed Date" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding CompetentAuthorityProfile.AppointedDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Tenure Expiry" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <DatePicker Date="{Binding CompetentAuthorityProfile.TenureExpiryDate}" FontSize="24" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Statutory Committees / Boards" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding CompetentAuthorityProfile.CommitteeMemberships}" Placeholder="e.g. Academic Council, BASR, Syndicate" FontSize="27" />
+
+                        <Label Text="Executive Mandate &amp; Notes" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Editor Text="{Binding CompetentAuthorityProfile.MandateNotes}"
+                                Placeholder="Enter executive authority scope, delegated powers, or secretariat hours..."
+                                AutoSize="TextChanges"
+                                MinimumHeightRequest="100"
+                                FontSize="24" />
+
+                        <Button Text="Save Competent Authority Profile"
+                                Command="{Binding UpdateCompetentAuthorityCommand}"
+                                FontSize="27"
+                                HeightRequest="60"
+                                FontAttributes="Bold" />
+
+                    </VerticalStackLayout>
+
+                    <!--  VERIFIED SUPER ADMIN FULL PROFILE (Mapped to dbo.SuperAdminProfile) -->
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsSuperAdmin}">
+
+                        <!-- Section: Live System Telemetry Card -->
+                        <Label Text="System Telemetry"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Border Style="{StaticResource CardView}" Padding="15">
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="15" RowSpacing="12">
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="Admin Code" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding SuperAdminProfile.AdminCode}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+                                    <Label Text="Total Users" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding SuperAdminProfile.TotalUsersCount}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#2ECC71" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                                    <Label Text="Pending Approvals" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding SuperAdminProfile.PendingVerificationsCount}" Style="{StaticResource MediumLabel}" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#E67E22"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                                    <Label Text="Audit Log Entries" Style="{StaticResource SmallLabel}" Opacity="1" FontSize="20"/>
+                                    <Label Text="{Binding SuperAdminProfile.TotalAuditLogsCount}" Style="{StaticResource MediumLabel}" FontAttributes="Bold" FontFamily="OpenSansSemibold" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 1: Administrator Identity & Security Clearance -->
+                        <Label Text="Security &amp; Clearance"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Admin Code" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.AdminCode}" Placeholder="e.g. ADM-0002" FontSize="27" />
+
+                        <Label Text="Administrator Full Name" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.FullName}" Placeholder="Full Name" FontSize="27" />
+
+                        <Label Text="Administrator Title" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.AdminTitle}" Placeholder="Chief System Administrator" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Clearance Level" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding SuperAdminProfile.AccessClearanceLevel}" Placeholder="Level-5 Root" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Status" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding SuperAdminProfile.Status}" Placeholder="Active" FontSize="27" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Security &amp; Governance Scope" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.SecurityScope}" Placeholder="Full System, Roles &amp; Workflow Control" FontSize="27" />
+
+                        <HorizontalStackLayout Spacing="12" VerticalOptions="Center" Margin="0,5">
+                            <Switch IsToggled="{Binding SuperAdminProfile.TwoFactorEnabled}" />
+                            <Label Text="Enforce Two-Factor Authentication (2FA)" Style="{StaticResource SmallLabel}" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <BoxView HeightRequest="1" Margin="0,5"
+                                 Color="{AppThemeBinding Light={StaticResource Card Border}, Dark={StaticResource PrimaryDark}}" />
+
+                        <!-- Section 2: Infrastructure, Contact & Maintenance -->
+                        <Label Text="Infrastructure &amp; Contact"
+                               FontAttributes="Bold"
+                               Style="{StaticResource LargeLabel}"
+                               FontSize="35"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryLight}}" />
+
+                        <Label Text="Official Admin Email" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.Email}" Keyboard="Email" Placeholder="superadmin@lms.com" FontSize="27" />
+
+                        <Label Text="Primary Phone" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.Phone}" Keyboard="Telephone" Placeholder="Phone Number" FontSize="27" />
+
+                        <Label Text="Emergency Escalation Contact" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Entry Text="{Binding SuperAdminProfile.EmergencyEscalationContact}" Keyboard="Telephone" Placeholder="24/7 NOC / Emergency Hotline" FontSize="27" />
+
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Server / NOC Location" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding SuperAdminProfile.DataCenterLocation}" Placeholder="IT Block Server Room" FontSize="27" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Maintenance Window" Style="{StaticResource SmallLabel}" FontSize="24" FontAttributes="Bold" />
+                                <Entry Text="{Binding SuperAdminProfile.MaintenanceWindow}" Placeholder="Sun 02:00-04:00 AM" FontSize="27" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="System Governance &amp; Audit Notes" Style="{StaticResource SmallLabel}" Margin="0,0,0,-8" FontSize="24" FontAttributes="Bold" />
+                        <Editor Text="{Binding SuperAdminProfile.SystemNotes}"
+                                Placeholder="Enter security policies, backup schedules, or role assignment notes..."
+                                AutoSize="TextChanges"
+                                MinimumHeightRequest="100"
+                                FontSize="24" />
+
+                        <Button Text="Save Super Admin Profile"
+                                Command="{Binding UpdateSuperAdminCommand}"
+                                FontSize="27"
+                                HeightRequest="60"
+                                FontAttributes="Bold" />
+
+                    </VerticalStackLayout>
+
+                    <!-- Pending Verifications Queue (Using BindableLayout instead of CollectionView to prevent ScrollView freeze) -->
+                    <VerticalStackLayout Spacing="10" IsVisible="{Binding HasPendingReviews}">
+                        <Label Text="Pending Profile Verifications"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="#E67E22" />
+
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding PendingReviews}" Spacing="8">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="model:PendingVerificationItem">
+                                    <Border Style="{StaticResource CardView}" Padding="15" Margin="0,5">
+                                        <VerticalStackLayout Spacing="8">
+                                            <Label Text="{Binding FullName}" FontSize="22" FontAttributes="Bold" />
+                                            <Label Text="{Binding Email}" FontSize="18" Opacity="0.8" />
+                                            <Label Text="{Binding ProfileType, StringFormat='Requested Role: {0}'}" FontSize="18" FontAttributes="Bold" />
+
+                                            <Grid ColumnDefinitions="*, *" ColumnSpacing="12" Margin="0,8,0,0">
+                                                <Button Grid.Column="0"
+                                                        Text="Approve"
+                                                        BackgroundColor="#2ECC71"
+                                                        TextColor="White"
+                                                        FontAttributes="Bold"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ProfileViewModel}}, Path=ApproveProfileCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                                <Button Grid.Column="1"
+                                                        Text="Reject"
+                                                        BackgroundColor="#E74C3C"
+                                                        TextColor="White"
+                                                        FontAttributes="Bold"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ProfileViewModel}}, Path=RejectProfileCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                            </Grid>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <Button Text="Refresh Profile &amp; Queue"
+                            Command="{Binding RefreshVerificationCommand}"
+                            FontSize="27"
+                            HeightRequest="60"
+                            FontAttributes="Bold" />
+                </VerticalStackLayout>
+
+              
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading overlay -->
+        <Grid Grid.RowSpan="2" BackgroundColor="#80000000" IsVisible="{Binding IsBusy}" InputTransparent="False">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource PrimaryLight}"
+                               WidthRequest="50"
+                               HeightRequest="50" />
+        </Grid>
+    </Grid>
+</ContentPage>
